@@ -54,7 +54,7 @@ def preprocess_text(text):
 	text = re.sub(r'\s+', ' ', text).strip()
 	return text
 
-rain_data.columns
+train_data.columns
 
 positive_words = ['happy', 'excited', 'joy', 'love', 'good', 'great']
 negative_words = ['terrible', 'hate', 'worst', 'bad', 'awful', 'murder']
