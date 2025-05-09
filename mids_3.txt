@@ -1,0 +1,80 @@
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.classify import NaiveBayesClassifier
+from nltk.classify.util import accuracy
+import string
+import re
+
+nltk.download('punkt')
+
+nltk.download('stopwords')
+
+df = pd.read_csv('twitter_training.csv')
+
+df.head()
+
+df.drop(columns=['2401'], inplace=False)
+
+# Renaming columns
+df.rename(columns={'Borderlands': 'topic', 'Positive': 'label', 'im getting on borderlands and i will murder you all ,': 'text'}, inplace=True)
+
+df.head()
+
+df.drop(columns=['2401', 'topic'], inplace=False)
+
+def preprocess_text(text):
+	text = text.lower() # Convert to lowercase
+	text = text.translate(str.maketrans('', '', string.punctuation)) # Remove punctuat
+	words = word_tokenize(text) # Tokenization
+	words = [word for word in words if word not in stopwords.words("english")] # Remov
+	return words
+
+def extract_features(words):
+	features = {}
+	for word in positive_words:
+		features[f"contains({word})"] = (word in words)
+	for word in negative_words:
+		features[f"contains({word})"] = (word in words)
+	return features
+
+train_data = df
+
+train_data.head()
+
+train_data = train_data.drop(columns=['2401', 'topic'])
+
+def preprocess_text(text):
+	if not isinstance(text, str):
+		return "" # Or use a placeholder like "missing" or "unknown"
+	text = text.lower()
+	text = re.sub(r'http\S+|www\S+', '', text)
+	text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
+	text = re.sub(r'\s+', ' ', text).strip()
+	return text
+
+rain_data.columns
+
+positive_words = ['happy', 'excited', 'joy', 'love', 'good', 'great']
+negative_words = ['terrible', 'hate', 'worst', 'bad', 'awful', 'murder']
+
+train_set = [(extract_features(preprocess_text(text)), label) for text, label in zip(df['text'], df['label'])]
+
+classifier = NaiveBayesClassifier.train(train_set)
+
+def classify_text(text):
+	words = preprocess_text(text)
+	features = extract_features(words)
+	return classifier.classify(features)
+
+new_text = "I am feeling very happy and excited today!"
+print(f"Sentiment: {classify_text(new_text)}")
+
+new_text2 = "This is a terrible experience. I hate it!"
+print(f"Sentiment: {classify_text(new_text2)}")
+
+new_text3 = "Im getting on borderland and i will murder you all"
+print(f"Sentiment: {classify_text(new_text3)}")
+
+
