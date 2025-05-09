@@ -1,0 +1,9 @@
+import pandas as pd
+df = pd.read_csv("titanic.csv")
+df.head()
+df.tail()
+df.info()
+df.dtypes()
+df.describe()
+df.shape()
+df.isnull().sum()
